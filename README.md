@@ -71,7 +71,7 @@ Installation
 
 If you are installing on Arch Linux, this driver [can be built and installed as a package](#as-a-package-on-arch-linux). This is recommended.
 
-If you are using a Red Hat-based distribution such as Fedora, you can [build and install a package](#as-an-akmod-package-for-red-hat-based-distributions) as well.
+If you are using a Red Hat-based distribution such as Fedora, you can [download and install the RPM packages](#as-an-rpm-package-for-red-hat-based-distributions), or even [build your own packages from source](#building-rpm-packages-from-source) as well.
 
 Otherwise, [see the DKMS installation instructions](#from-source-using-dkms).
 
@@ -89,9 +89,24 @@ Run the following command *without* using root permissions. Once the package is 
     makepkg --clean --cleanbuild --syncdeps --force --install
 
 
-### As an akmod package for Red Hat-based distributions
+### As an RPM package for Red Hat-based distributions
 
-On Red Hat-based distributions such as Fedora (an its atomic variants such as Silverblue, Kinoite, etc.), instead of installing from source directly, it is possible to build and install the module as a package. This is helpful because the rpm packaging system will be aware of it. (Note that the [akmod](https://rpmfusion.org/Packaging/KernelModules/Akmods) system will be used to manage the module.)
+On Red Hat-based distributions such as Fedora (an its atomic variants such as Silverblue, Kinoite, etc.), instead of installing from source directly, it is possible to install the module as a package. This is helpful because the rpm packaging system will be aware of it. (Note that the [akmod](https://rpmfusion.org/Packaging/KernelModules/Akmods) system will be used to manage the module.)
+
+This module consists of two packages: `akmod-hid-nx` and `hid-nx-kmod-common`. They are both installed together, as they depend on each other.
+
+You can download them from the [Releases](https://github.com/mlucianoeze/hid-nx/releases) page, or [build them from source](#building-rpm-packages-from-source).
+
+Install using `dnf`:
+
+    sudo dnf install ./path/to/akmod-hid-nx.rpm ./path/to/hid-nx-kmod-common.rpm
+
+Install using `rpm-ostree`:
+
+    rpm-ostree install ./path/to/akmod-hid-nx.rpm ./path/to/hid-nx-kmod-common.rpm
+
+
+#### Building RPM packages from source
 
 You will need some dependencies, such as `rpmdevtools` and `akmods`.
 
@@ -106,15 +121,7 @@ You can now cd into the source root directory, and run the following commands *w
     rpmbuild -ba ./hid-nx-kmod.spec
     rpmbuild -ba ./hid-nx-kmod-common.spec
 
-After these commands are complete, both rpm files will be placed in `~/rpmbuild/RPMS/`. You will need to install the `akmod` package and the `common` package together.
-
-Using `dnf`:
-
-    sudo dnf install path/to/akmod-hid-nx.rpm path/to/hid-nx-kmod-common.rpm
-
-Using `rpm-ostree`:
-
-    rpm-ostree install path/to/akmod-hid-nx.rpm path/to/hid-nx-kmod-common.rpm
+After these commands are complete, both rpm files will be placed in `~/rpmbuild/RPMS/`. You will need to install the `akmod` package and the `common` package together, as described above.
 
 
 ### From source using DKMS
