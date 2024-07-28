@@ -10,17 +10,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Build RPM packages
         uses: ./.github/actions/rpm-packaging
-      - name: Upload akmod-hid-nx artifact
+      - name: Upload RPM packages as artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: akmod-hid-nx
-          path: ${{ github.workspace }}/akmod-hid-nx*.rpm
-          if-no-files-found: error
-          overwrite: true
-      - name: Upload hid-nx-kmod-common artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: hid-nx-kmod-common
-          path: ${{ github.workspace }}/hid-nx-kmod-common*.rpm
+          name: hid-nx-rpm
+          path: ${{ github.workspace }}/*.rpm
           if-no-files-found: error
           overwrite: true
