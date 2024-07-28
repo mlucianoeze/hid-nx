@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build RPM packages
         uses: ./.github/actions/rpm-packaging
-      - name: Upload RPM packages as artifacts
+      - name: Generate artifact with built RPM packages
         uses: actions/upload-artifact@v4
         with:
           name: hid-nx-rpm
