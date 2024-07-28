@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Initialize rpmbuild tree
+rpmdev-setuptree
+
 # Create tmp directories for tar
 mkdir -p /tmp/build
 cd /tmp/build
