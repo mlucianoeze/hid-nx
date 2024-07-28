@@ -7,11 +7,20 @@ The `hid-nx` driver module is meant to be used in place of the in-kernel `hid-ni
 
 For more information about the differences between this and the `hid-nintendo` driver included in the Linux kernel, see the ["History" section](#history) further down.
 
+About this fork
+---------------
+
+I've been exploring Fedora Silverblue as an immutable distro alternative for it to become my daily driver. As I've used this driver in the past, I wanted to install it there, but the immutable nature of Silverblue makes it (at least for now) incompatible with DKMS, so I needed to add akmods support for it to work.
+
+I've been working on it during a few days, and managed to create working packages with akmods instead of DKMS.
+
+After some rigorous testing (playing TLOZ with the N64 controller) and some kernel updates in between, it was finally time to contribute with this changes to add akmods support.
+
 
 Source
 ------
 
-[The source code for this driver can be found on GitHub.](https://github.com/emilyst/hid-nx-dkms)
+The [original source code](https://github.com/emilyst/hid-nx-dkms) was written by [emilyst](https://github.com/emilyst), and [this version](https://github.com/mlucianoeze/hid-nx) is a fork that supports akmods in addition to DKMS.
 
 
 Status
@@ -43,9 +52,9 @@ This does **not** include controllers for the "Classic" consoles released by Nin
 
 > **Note**: Compared to `hid-nintendo`, devices using the `hid-nx` driver module will have the following different behaviors:
 >
-> * Input mappings: During refactoring to more easily accommodate adding new device inputs, I rearranged the ordering and mapping of some inputs for existing controllers for consistency.
-> * Device names: Rather than hard-code names per device, as in the mainline driver, I allow each device to report its own name on connection. This means the device's name differs slightly in some cases, as seen in programs like GNOME's Bluetooth settings, or RetroArch.
->   * Unfortunately, RetroArch configures controllers by device name, and this means some controllers will no longer be automatically configured by RetroArch when using this driver. I hope in the future to supply useful autoconfiguration files for use, but in the meantime, you will need to configure those controllers' inputs manually.
+> * Input mappings: During refactoring to more easily accommodate adding new device inputs, the ordering and mapping of some inputs were rearranged for existing controllers for consistency.
+> * Device names: Rather than hard-code names per device, as in the mainline driver, it's allowed for each device to report its own name on connection. This means the device's name differs slightly in some cases, as seen in programs like GNOME's Bluetooth settings, or RetroArch.
+>   * Unfortunately, RetroArch configures controllers by device name, and this means some controllers will no longer be automatically configured by RetroArch when using this driver. There is hope that in the future, useful autoconfiguration files will be supplied for use, but in the meantime, you will need to configure those controllers' inputs manually.
 >   * This should not impact Joy-Cons, use of `joycond`, etc.
 
 
@@ -60,11 +69,15 @@ It may work on earlier versions, but they are not supported.
 Installation
 ------------
 
-If you are installing on Arch Linux, this driver [can be built and installed as a package](#arch-linux-package-installation). This is recommended. Otherwise, [see the DKMS installation instructions](#from-source-using-dkms).
+If you are installing on Arch Linux, this driver [can be built and installed as a package](#as-a-package-on-arch-linux). This is recommended.
+
+If you are using a Red Hat-based distribution such as Fedora, you can [build and install a package](#as-an-akmod-package-for-red-hat-based-distributions) as well.
+
+Otherwise, [see the DKMS installation instructions](#from-source-using-dkms).
 
 Once installed, this driver replaces the native `hid-nintendo` driver. No other configuration should be necessary.
 
-DKMS will automatically rebuild the driver for every kernel you install in the future.
+DKMS and akmods will automatically rebuild the driver for every kernel you install in the future.
 
 
 ### As a package on Arch Linux
@@ -74,6 +87,34 @@ On Arch Linux, instead of installing from source directly, it is possible to bui
 Run the following command *without* using root permissions. Once the package is built, you will be asked to confirm and authenticate for the package installation.
 
     makepkg --clean --cleanbuild --syncdeps --force --install
+
+
+### As an akmod package for Red Hat-based distributions
+
+On Red Hat-based distributions such as Fedora (an its atomic variants such as Silverblue, Kinoite, etc.), instead of installing from source directly, it is possible to build and install the module as a package. This is helpful because the rpm packaging system will be aware of it. (Note that the [akmod](https://rpmfusion.org/Packaging/KernelModules/Akmods) system will be used to manage the module.)
+
+You will need some dependencies, such as `rpmdevtools` and `akmods`.
+
+Run the following command *without* using root permissions, for it to create the file tree you need to build RPM packages if not present. This will be placed in your home directory.
+
+    rpmdev-setuptree
+
+Place the source of this repository in a folder named `hid-nx-${version}` (for example `hid-nx-1.14`), and tar that folder in a file with the same name `hid-nx-${version}.tar.gz`. Then move the tar file to `~/rpmbuild/SOURCES/`.
+
+You can now cd into the source root directory, and run the following commands *without* root permissions.
+
+    rpmbuild -ba ./hid-nx-kmod.spec
+    rpmbuild -ba ./hid-nx-kmod-common.spec
+
+After these commands are complete, both rpm files will be placed in `~/rpmbuild/RPMS/`. You will need to install the `akmod` package and the `common` package together.
+
+Using `dnf`:
+
+    sudo dnf install path/to/akmod-hid-nx.rpm path/to/hid-nx-kmod-common.rpm
+
+Using `rpm-ostree`:
+
+    rpm-ostree install path/to/akmod-hid-nx.rpm path/to/hid-nx-kmod-common.rpm
 
 
 ### From source using DKMS
@@ -88,8 +129,8 @@ Before installation, you should install DKMS support. Depending on which Linux d
 
 Next, clone the source code.
 
-    git clone https://github.com/emilyst/hid-nx-dkms
-    cd hid-nx-dkms
+    git clone https://github.com/mlucianoeze/hid-nx
+    cd hid-nx
 
 Then run the following commands as root or using `sudo`.
 
@@ -101,7 +142,9 @@ Then run the following commands as root or using `sudo`.
 Uninstallation
 --------------
 
-To remove fully, run the following commands as root or using `sudo`.
+If you have installed this driver as a package, you can remove it using your package manager.
+
+If you have instead installed it from source using DKMS, run the following commands as root or using `sudo` to remove fully.
 
     modprobe -r hid_nx
     dkms uninstall hid-nx/1.14
@@ -136,6 +179,8 @@ Planned
 History
 -------
 
+### Original work by [emilyst](https://github.com/emilyst)
+
 This driver was originally taken from the source code [from `drivers/hid/hid-nintendo.c` at Linux kernel commit `3e732ebf7316ac83e8562db7e64cc68aec390a18`](https://github.com/torvalds/linux/blob/3e732). That driver source was first written by Daniel Ogorchock. [His Linux kernel fork can be found on GitHub.](https://github.com/DanielOgorchock/linux)
 
 I then manually incorporated [changes from Nadia Holmquist Pedersen to support SNES and NES controllers from Nintendo Switch Online](https://github.com/nadiaholmquist/linux/tree/hid-nintendo).
@@ -147,6 +192,12 @@ Once I saw there were more changes I wanted to make, I decided to share them as 
 Along with Sega Genesis gamepad support, I've also added support for the Nintendo 64 controller for Nintendo Switch Online.
 
 I've since renamed the driver to `hid-nx` to avoid confusion with the in-kernel module. I am in the process of refactoring and reformatting the source code to make it easier to understand and maintain.
+
+### Fork by [mlucianoeze](https://github.com/mlucianoeze)
+
+I've forked the original repository, renaming it from `hid-nx-dkms` to just `hid-nx` so it's not just limited to DKMS.
+
+I then created the needed spec files and built the packages. It took some trial and error but it ended up working just fine, so now there's akmods support in addition to DKMS.
 
 
 License
