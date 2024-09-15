@@ -106,6 +106,22 @@ Install using `rpm-ostree`:
     rpm-ostree install ./path/to/akmod-hid-nx.rpm ./path/to/hid-nx-kmod-common.rpm
 
 
+#### Troubleshooting for RPM packages
+
+If dependency conflict errors occur when installing the provided packages, the RPM metadata might be outdated, as these packages have very few dependencies.
+
+You can invalidate this cache and try again.
+
+When using `dnf`:
+
+    sudo dnf clean expire-cache
+
+When using `rpm-ostree`:
+
+    rpm-ostree cleanup -m
+    rpm-ostree refresh-md
+
+
 #### Building RPM packages from source
 
 You will need some dependencies, such as `rpmdevtools` and `akmods`.
