@@ -10,6 +10,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Build RPM packages for Fedora 41
         run: ./packaging/fedora/step.sh ${{ github.workspace }} 41
+      - name: Build RPM packages for Fedora 40
+        run: ./packaging/fedora/step.sh ${{ github.workspace }} 40
+      - name: Build RPM packages for Fedora 39
+        run: ./packaging/fedora/step.sh ${{ github.workspace }} 39
       - name: Generate artifact with built RPM packages
         uses: actions/upload-artifact@v4
         with:
