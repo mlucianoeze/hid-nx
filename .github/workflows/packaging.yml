@@ -9,9 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build RPM packages for Fedora 41
-        run: |
-          docker build -t hid-nx__rpm-packaging__fc41 --build-arg FEDORA_VERSION=41 -f packaging/fedora/Dockerfile .
-          docker run --rm -v ${{ github.workspace }}:/github/workspace hid-nx__rpm-packaging__fc41
+        run: ./packaging/fedora/step.sh ${{ github.workspace }} 41
       - name: Generate artifact with built RPM packages
         uses: actions/upload-artifact@v4
         with:
