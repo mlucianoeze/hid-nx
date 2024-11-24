@@ -9,17 +9,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build RPM packages for Fedora 41
-        uses: ./.github/actions/rpm-packaging
+        uses: ./.github/actions/rpm-packaging-41
         with:
           build-args: FEDORA_VERSION=41
-      - name: Build RPM packages for Fedora 40
-        uses: ./.github/actions/rpm-packaging
-        with:
-          build-args: FEDORA_VERSION=40
-      - name: Build RPM packages for Fedora 39
-        uses: ./.github/actions/rpm-packaging
-        with:
-          build-args: FEDORA_VERSION=39
       - name: Generate artifact with built RPM packages
         uses: actions/upload-artifact@v4
         with:
