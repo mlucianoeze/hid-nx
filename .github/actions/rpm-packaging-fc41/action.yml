@@ -1,0 +1,8 @@
+name: 'RPM Packaging for Fedora 41'
+description: 'Build RPM packages for Fedora 41 from source'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'package'
+  color: 'blue'
