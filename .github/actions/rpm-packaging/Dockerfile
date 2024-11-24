@@ -1,4 +1,6 @@
-FROM fedora:latest
+ARG FEDORA_VERSION
+
+FROM fedora:${FEDORA_VERSION}
 
 # Install dependencies
 RUN dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
