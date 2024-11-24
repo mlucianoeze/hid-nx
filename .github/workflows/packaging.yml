@@ -9,7 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build RPM packages for Fedora 41
-        run: docker -v && exit 1
+        run: docker -v && pwd && ls -l && ls -l /github/workspace && exit 1
       - name: Generate artifact with built RPM packages
         uses: actions/upload-artifact@v4
         with:
