@@ -1,8 +1,0 @@
-name: 'RPM Packaging'
-description: 'Build RPM packages from source'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
-branding:
-  icon: 'package'
-  color: 'blue'

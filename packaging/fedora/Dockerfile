@@ -1,9 +1,11 @@
-FROM fedora:latest
+ARG FEDORA_VERSION
+
+FROM fedora:${FEDORA_VERSION}
 
 # Install dependencies
 RUN dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 RUN dnf -y install buildsys-build-rpmfusion akmods rpmdevtools
 
 # Set entrypoint
-COPY entrypoint.sh /entrypoint.sh
+COPY packaging/fedora/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
